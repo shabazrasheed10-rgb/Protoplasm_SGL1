@@ -1,569 +1,368 @@
-<!doctype html>
-<html lang="en" dir="ltr"> 
- <head> 
-  <meta charset="UTF-8"> 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-  <title>Cell biology Quiz</title> 
-  <script src="https://cdn.tailwindcss.com"></script> 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"> 
-  <style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>End-Rotation&Final_Cell biology_2022-2025</title>
+
+    <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #E5E4E2;
+            background-color: white;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Tahoma", "Arial", sans-serif;
+            margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            margin: 0;
         }
 
-        .sticky-header {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background-color: #E5E4E2;
-            padding-top: 20px;
-            padding-bottom: 1rem;
+        .container {
             width: 100%;
+            max-width: 900px;
+            padding: 20px 30px;
+            box-sizing: border-box;
         }
 
-        .question-card {
-            background-color: white;
-            border-radius: 1rem;
-            padding: 2rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            margin-bottom: 2rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .option-button {
-            transition: all 0.2s ease-in-out;
-            cursor: pointer;
+        .header { 
+            text-align: center; 
+            margin-bottom: 20px;
+            background-color: #2D2D2D;
+            color: white;
+            padding: 14px;
+            border-radius: 7px;
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            text-align: left;
-            color: #1f2937;
+            align-items: center;
         }
 
-        .option-button:hover:not(.answered) {
-            transform: translateX(4px);
-            background-color: #f3f4f6;
+        /* Search Bar Styles */
+        .search-container {
+            margin-bottom: 30px;
         }
 
-        .feedback-icon {
-            width: 24px;
-            height: 24px;
-            margin-left: 10px;
-            opacity: 0;
-            transition: opacity 0.3s;
+        #search-input {
+            width: 100%;
+            padding: 12px 20px;
+            font-size: 1.1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.3s;
         }
 
-        .feedback-icon-visible {
-            opacity: 1;
+        #search-input:focus {
+            border-color: #729fcf;
         }
 
-        #done-button-container {
-            margin-top: 1.5rem;
-            padding-top: 1rem;
-            border-top: 1px solid #f3f4f6;
-            display: none;
+        /* Container for filtering */
+        #quiz-content {
+            display: flex;
+            flex-direction: column;
         }
 
-        #done-btn:disabled {
-            background-color: #9ca3af;
-            cursor: not-allowed;
-            opacity: 0.7;
+        @media (max-width: 600px) {
+            .header {
+                flex-direction: column;
+                gap: 8px;
+                padding: 20px 10px;
+            }
+            .header h5 {
+                margin: 2px 0;
+            }
         }
-    </style> 
- </head> 
- <body> 
-  <div id="main-wrapper" class="w-full max-w-2xl px-4"> 
-   <div class="sticky-header"> 
-    <div class="bg-white shadow-md rounded-xl p-4 border-b-4 border-[#6D9BCA]"> 
-     <div class="relative flex flex-col gap-1"> 
-      <h1 class="text-xl font-bold text-[#6D9BCA]">Protoplasm_SGL1</h1> <!-- Top-right small text --> <span class="absolute top-0 right-0 text-sm text-gray-400 font-medium">Cell biology</span> 
-      <div class="flex justify-between items-center border-t border-gray-100 pt-2 mt-2"> 
-       <div class="text-sm font-semibold text-gray-700">
-         Score: <span id="score-display" class="text-green-600">0</span> / <span id="total-questions-header">0</span> 
-       </div> 
-       <div class="text-sm font-bold text-red-600" id="timer-display">
-         Time: 00:00 
-       </div> 
-      </div> 
-     </div> 
-    </div> 
-   </div> 
-   <div id="questions-list" class="mt-4"></div> 
-   <div id="final-score-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-[200]"> 
-    <div class="bg-white rounded-xl p-8 text-center shadow-2xl w-full max-w-sm"> 
-     <h2 class="text-4xl font-extrabold text-[#6D9BCA] mb-4">Quiz Completed!</h2> 
-     <p class="text-xl text-gray-700 mb-2">You got:</p> 
-     <p class="text-6xl font-black text-green-700 mb-4" id="final-score-text">0 / 0</p> 
-     <p class="text-lg text-gray-600 mb-8">Total Time: <span id="final-time-text" class="font-bold text-red-600"></span></p> <button onclick="startOver()" class="px-6 py-3 bg-green-600 text-white font-bold rounded-xl hover:bg-green-700 transition duration-150"> Start Over </button> 
-    </div> 
-   </div> 
-  </div> 
-  <script>
-        const quizData = [
-        
-  
+
+        .divider { 
+            border: none; 
+            border-top: 1px solid lightgrey; 
+            margin-bottom: 30px; 
+        }
+
+        .q-block {
+            margin-bottom: 40px;
+            border-bottom: 1px solid lightgrey;
+            padding-bottom: 25px;
+            order: 0; /* Default order */
+            background-color: white;
+        }
+
+        .q-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: black;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .opts {
+            list-style-type: none;
+            padding: 0;
+            line-height: 1.8;
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .ans-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 50px;
+        }
+
+        .ans-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #2e7d32;
+            visibility: hidden;
+            background-color: #f1f8e9;
+            padding: 8px 15px;
+            border-radius: 4px;
+        }
+
+        .q-block.revealed .ans-text {
+            visibility: visible;
+        }
+
+        .ans-btn {
+            background-color: #729fcf;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .ans-btn:hover { 
+            background-color: #5d8ab9; 
+        }
+
+        mark {
+            background-color: yellow;
+            color: black;
+            padding: 0 2px;
+            border-radius: 2px;
+        }
+
+        a { 
+            color: #729fcf; 
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="header">
+        <h3>End-Rotation&Final</h3>
+        <h5>HDSF-Cell biology</h5>
+        <h5>2022-2025</h5>
+        <h5>Created by <a href="https://t.me/Shabaz_Rasheed">Shabaz Rasheed</a></h5>
+    </div>
+
+    <div class="search-container">
+        <input type="text" id="search-input" placeholder="Search for questions..." onkeyup="handleSearch()">
+    </div>
+
+    <hr class="divider">
+    <div id="quiz-content"></div>
+</div>
+
+<script>
+
+
+
+
+const data = [
+
+      const data = [
   {
-    question: "1. Protoplasm is best described as:",
-    options: [
-      "A. A non-living cell product",
-      "B. A crystalline substance",
-      "C. A jelly-like living substance",
-      "D. A rigid structure",
-      "E. A gaseous material"
+    "n": 1,
+    "q": "Which of the following is considered the 'living part' of the cell?",
+    "o": [
+      "A. Cell Wall",
+      "B. Protoplasm",
+      "C. Vacuole",
+      "D. Extracellular matrix",
+      "E. Capsule"
     ],
-    answer: "C. A jelly-like living substance"
+    "a": "B"
   },
   {
-    question: "2. The term protoplasm was coined by:",
-    options: [
-      "A. Robert Hooke",
-      "B. Schleiden",
-      "C. Schwann",
-      "D. J.E. Purkinje",
-      "E. Watson"
+    "n": 2,
+    "q": "Protoplasm is primarily composed of which three elements?",
+    "o": [
+      "A. Mitochondria, Ribosomes, Lysosomes",
+      "B. Plasma membrane, Nucleus, Cytoplasm",
+      "C. Cell wall, Chloroplast, Vacuole",
+      "D. DNA, RNA, Proteins",
+      "E. Water, Ions, Glucose"
     ],
-    answer: "D. J.E. Purkinje"
+    "a": "B"
   },
   {
-    question: "3. Protoplasm mainly consists of:",
-    options: [
-      "A. Cell wall only",
-      "B. Plasma membrane, nucleus, and cytoplasm",
-      "C. Ribosomes only",
-      "D. Vacuole and plastids",
-      "E. Mitochondria only"
-    ],
-    answer: "B. Plasma membrane, nucleus, and cytoplasm"
-  },
-  {
-    question: "4. Protoplasm performs all the following functions EXCEPT:",
-    options: [
-      "A. Photosynthesis only",
-      "B. Growth",
-      "C. Reproduction",
-      "D. Metabolism",
-      "E. Excretion"
-    ],
-    answer: "A. Photosynthesis only"
-  },
-  {
-    question: "5. The nature of protoplasm is:",
-    options: [
-      "A. Crystalline",
-      "B. Solid",
-      "C. Gaseous",
-      "D. Fibrous",
-      "E. Colloidal"
-    ],
-    answer: "E. Colloidal"
-  },
-  {
-    question: "6. Tyndall effect refers to:",
-    options: [
-      "A. Scattering of light by colloidal particles",
-      "B. Reflection of light",
-      "C. Absorption of light",
-      "D. Refraction of light",
-      "E. Emission of light"
-    ],
-    answer: "A. Scattering of light by colloidal particles"
-  },
-  {
-    question: "7. Elasticity and contractility of protoplasm are due to:",
-    options: [
-      "A. Lipids",
-      "B. Folding and unfolding of proteins",
-      "C. Water",
-      "D. Carbohydrates",
-      "E. Minerals"
-    ],
-    answer: "B. Folding and unfolding of proteins"
-  },
-  {
-    question: "8. The approximate pH of protoplasm is:",
-    options: [
-      "A. 1–2",
-      "B. 12–14",
-      "C. 3–5",
-      "D. 6–8",
-      "E. 9–11"
-    ],
-    answer: "D. 6–8"
-  },
-  {
-    question: "9. Cyclosis is:",
-    options: [
-      "A. Cell death",
-      "B. Cell division",
-      "C. Diffusion across membrane",
-      "D. Osmosis",
-      "E. Cytoplasmic streaming"
-    ],
-    answer: "E. Cytoplasmic streaming"
-  },
-  {
-    question: "10. Cyclosis requires high energy molecules such as:",
-    options: [
-      "A. DNA",
-      "B. RNA",
-      "C. ATP",
-      "D. NAD",
-      "E. FAD"
-    ],
-    answer: "C. ATP"
-  },
-  {
-    question: "11. Permeability means:",
-    options: [
-      "A. Cell rigidity",
-      "B. Light scattering",
-      "C. Cell division",
-      "D. Protein folding",
-      "E. Movement of molecules across plasma membrane"
-    ],
-    answer: "E. Movement of molecules across plasma membrane"
-  },
-  {
-    question: "12. Antagonism of protoplasm refers to:",
-    options: [
-      "A. Cell division",
-      "B. Removal of toxic effects of substances",
-      "C. Storage of nutrients",
-      "D. Protein synthesis",
-      "E. Energy production"
-    ],
-    answer: "B. Removal of toxic effects of substances"
-  },
-  {
-    question: "13. Protoplasm is found:",
-    options: [
-      "A. Inside the cell",
-      "B. Outside the cell",
-      "C. Only in animal cells",
-      "D. Only in plant cells",
-      "E. In the cell wall"
-    ],
-    answer: "A. Inside the cell"
-  },
-  {
-    question: "14. The most abundant substance in protoplasm is:",
-    options: [
-      "A. Protein",
-      "B. Water",
-      "C. Carbohydrate",
-      "D. Nucleic acid",
-      "E. Lipid"
-    ],
-    answer: "B. Water"
-  },
-  {
-    question: "15. Water constitutes approximately what percentage of total cell mass?",
-    options: [
+    "n": 3,
+    "q": "What is the approximate percentage of water in the total mass of a cell's protoplasm?",
+    "o": [
       "A. 10–20%",
-      "B. 30–40%",
+      "B. 30–50%",
       "C. 70–90%",
-      "D. 50–60%",
-      "E. 95–100%"
+      "D. 95–100%",
+      "E. 5–15%"
     ],
-    answer: "C. 70–90%"
+    "a": "C"
   },
   {
-    question: "16. Which of the following is NOT a chemical component of protoplasm?",
-    options: [
-      "A. Air",
-      "B. Inorganic substances",
-      "C. Organic substances",
+    "n": 4,
+    "q": "The streaming movement of the cytoplasm used to transport nutrients and organelles is called:",
+    "o": [
+      "A. Osmosis",
+      "B. Tyndall effect",
+      "C. Cyclosis",
+      "D. Antagonism",
+      "E. Phagocytosis"
+    ],
+    "a": "C"
+  },
+  {
+    "n": 5,
+    "q": "Which physical property allows protoplasm to scatter light due to its colloidal nature?",
+    "o": [
+      "A. Permeability",
+      "B. Tyndall Effect",
+      "C. Contractility",
+      "D. Elasticity",
+      "E. Surface tension"
+    ],
+    "a": "B"
+  },
+  {
+    "n": 6,
+    "q": "The specific ability of protoplasm to respond to external stimuli is known as:",
+    "o": [
+      "A. Metabolism",
+      "B. Irritability",
+      "C. Cyclosis",
+      "D. Antagonism",
+      "E. Tyndall Effect"
+    ],
+    "a": "B"
+  },
+  {
+    "n": 7,
+    "q": "Protoplasm maintains a pH level within the range of:",
+    "o": [
+      "A. 1–3",
+      "B. 4–5",
+      "C. 6–8",
+      "D. 9–11",
+      "E. 12–14"
+    ],
+    "a": "C"
+  },
+  {
+    "n": 8,
+    "q": "Which molecule is compulsorily required to provide energy for cyclosis?",
+    "o": [
+      "A. Glucose",
+      "B. Oxygen",
+      "C. ATP",
       "D. Water",
-      "E. Proteins"
+      "E. Carbon dioxide"
     ],
-    answer: "A. Air"
+    "a": "C"
   },
   {
-    question: "17. Organic substances of protoplasm include:",
-    options: [
-      "A. Minerals and ions",
-      "B. Proteins, carbohydrates, lipids, and nucleic acids",
-      "C. Water only",
-      "D. Gases only",
-      "E. Salts only"
+    "n": 9,
+    "q": "The property of protoplasm to remove the toxic action of different substances is called:",
+    "o": [
+      "A. Metabolism",
+      "B. Antagonism",
+      "C. Permeability",
+      "D. Cyclosis",
+      "E. Adhesion"
     ],
-    answer: "B. Proteins, carbohydrates, lipids, and nucleic acids"
+    "a": "B"
   },
   {
-    question: "18. Water is important in cells because it:",
-    options: [
-      "A. Acts as an excellent solvent",
-      "B. Stops chemical reactions",
-      "C. Is non-reactive",
-      "D. Prevents metabolism",
-      "E. Makes cells rigid"
+    "n": 10,
+    "q": "Why does the chemical composition of protoplasm differ between cells in the same individual?",
+    "o": [
+      "A. Due to cell specialization and function",
+      "B. Due to the age of the cell",
+      "C. Due to changing levels of proteins and nucleic acids",
+      "D. Both A and B",
+      "E. All of the above"
     ],
-    answer: "A. Acts as an excellent solvent"
-  },
-  {
-    question: "19. Which property of water allows it to dissolve many substances?",
-    options: [
-      "A. Cohesion",
-      "B. Adhesion",
-      "C. High surface tension",
-      "D. Excellent solvent property",
-      "E. Temperature stability"
-    ],
-    answer: "D. Excellent solvent property"
-  },
-  {
-    question: "20. Protoplasm differs from cell to cell mainly due to:",
-    options: [
-      "A. Blood group",
-      "B. Body size",
-      "C. Gender",
-      "D. Environment only",
-      "E. Age, specialization, and function"
-    ],
-    answer: "E. Age, specialization, and function"
-  },
-  {
-    question: "21. Protoplasm is considered a dynamic system because it:",
-    options: [
-      "A. Changes continuously",
-      "B. Never changes",
-      "C. Remains solid",
-      "D. Exists only in plants",
-      "E. Is non-living"
-    ],
-    answer: "A. Changes continuously"
-  },
-  {
-    question: "22. Differences in protoplasm between cells are mainly due to:",
-    options: [
-      "A. Blood group",
-      "B. Environment only",
-      "C. Cell specialization, function and age",
-      "D. Body size",
-      "E. Gender"
-    ],
-    answer: "C. Cell specialization, function and age"
-  },
-  {
-    question: "23. In animal cells, energy for chemical reactions comes mainly from:",
-    options: [
-      "A. Photosynthesis",
-      "B. Respiration",
-      "C. Fermentation",
-      "D. Diffusion",
-      "E. Osmosis"
-    ],
-    answer: "B. Respiration"
-  },
-  {
-    question: "24. Which of the following is an inorganic component of protoplasm?",
-    options: [
-      "A. Proteins",
-      "B. Lipids",
-      "C. Carbohydrates",
-      "D. Nucleic acids",
-      "E. Ions"
-    ],
-    answer: "E. Ions"
-  },
-  {
-    question: "25. Increase in cytoplasm results in:",
-    options: [
-      "A. Decrease in cell size",
-      "B. Increase in cell growth",
-      "C. Reduced transport",
-      "D. Loss of metabolism",
-      "E. Cell death"
-    ],
-    answer: "B. Increase in cell growth"
-  },
-  {
-    question: "26. Protoplasm is called the primary substance because it:",
-    options: [
-      "A. Performs all vital life processes",
-      "B. Forms the cell wall",
-      "C. Stores minerals",
-      "D. Controls heredity only",
-      "E. Protects the cell"
-    ],
-    answer: "A. Performs all vital life processes"
-  },
-  {
-    question: "27. The colloidal nature of protoplasm explains its ability to:",
-    options: [
-      "A. Conduct electricity",
-      "B. Store energy",
-      "C. Synthesize DNA",
-      "D. Scatter light",
-      "E. Divide cells"
-    ],
-    answer: "D. Scatter light"
-  },
-  {
-    question: "28. Which factor can affect the viscosity of protoplasm?",
-    options: [
-      "A. Light",
-      "B. Cell shape",
-      "C. Cell division",
-      "D. Chromosomes",
-      "E. Acidity and temperature"
-    ],
-    answer: "E. Acidity and temperature"
-  },
-  {
-    question: "29. Cyclosis mainly helps the cell by:",
-    options: [
-      "A. Producing energy",
-      "B. Cell division",
-      "C. Protecting the nucleus",
-      "D. Transporting materials within the cell",
-      "E. Forming membranes"
-    ],
-    answer: "D. Transporting materials within the cell"
-  },
-  {
-    question: "30. Which statement about water in protoplasm is correct?",
-    options: [
-      "A. Present in small amount",
-      "B. Prevents chemical reactions",
-      "C. Forms the major part of cell mass",
-      "D. Found only in plant cells",
-      "E. Has no biological role"
-    ],
-    answer: "C. Forms the major part of cell mass"
+    "a": "E"
   }
+];
 
 
-             
-                
-        ];
 
-        let score = 0;
-        let timeSeconds = 0;
-        let timerId;
-        const totalQuestions = quizData.length;
-        let answeredQuestions = new Set();
 
-        const correctIconSVG = `<svg class="feedback-icon text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>`;
-        const incorrectIconSVG = `<svg class="feedback-icon text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>`;
+];
+const container = document.getElementById('quiz-content');
 
-        function startStopwatch() {
-            timerId = setInterval(() => {
-                timeSeconds++;
-                updateTimerDisplay();
-            }, 1000);
-        }
+// Store original HTML to restore after highlighting
+function renderQuiz() {
+    container.innerHTML = '';
+    data.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'q-block';
+        // We store the searchable text in data attributes for easy access
+        div.dataset.searchText = (item.q + " " + item.o.join(" ")).toLowerCase();
 
-        function updateTimerDisplay() {
-            const minutes = Math.floor(timeSeconds / 60);
-            const seconds = timeSeconds % 60;
-            const display = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            document.getElementById('timer-display').textContent = `Time: ${display}`;
-            return display;
-        }
+        div.innerHTML = `
+            <div class="q-text" data-original="${item.n}. ${item.q}">${item.n}. ${item.q}</div>
+            <ul class="opts">
+                ${item.o.map(opt => `<li data-original="${opt}">${opt}</li>`).join('')}
+            </ul>
+            <div class="ans-row">
+                <span class="ans-text">Answer: ${item.a}</span>
+                <button class="ans-btn" onclick="this.closest('.q-block').classList.toggle('revealed')">
+                    Answer
+                </button>
+            </div>
+        `;
+        container.appendChild(div);
+    });
+}
 
-        function renderQuiz() {
-            const container = document.getElementById('questions-list');
-            document.getElementById('total-questions-header').textContent = totalQuestions;
+function handleSearch() {
+    const searchTerm = document.getElementById('search-input').value.toLowerCase();
+    const blocks = document.querySelectorAll('.q-block');
 
-            quizData.forEach((data, index) => {
-                const isLast = index === totalQuestions - 1;
-                const questionCard = document.createElement('div');
-                questionCard.className = "question-card";
-                
-                let innerHTML = `
-                    <p class="text-xl font-bold text-gray-800 mb-6">${data.question}</p>
-                    <div id="options-container-${index}" class="space-y-4"></div>
-                `;
+    blocks.forEach(block => {
+        const qTextElem = block.querySelector('.q-text');
+        const optElems = block.querySelectorAll('li');
+        
+        // Reset content to original before applying new highlights
+        qTextElem.innerHTML = qTextElem.dataset.original;
+        optElems.forEach(li => li.innerHTML = li.dataset.original);
 
-                if (isLast) {
-                    innerHTML += `
-                        <div id="done-button-container">
-                            <button id="done-btn" disabled onclick="showFinalScore()" class="w-full py-4 bg-blue-600 text-white font-bold rounded-xl shadow-lg hover:bg-blue-700 transition duration-150 ease-in-out">
-                                Done
-                            </button>
-                        </div>
-                    `;
-                }
-
-                questionCard.innerHTML = innerHTML;
-                container.appendChild(questionCard);
-
-                const optionsContainer = document.getElementById(`options-container-${index}`);
-                data.options.forEach(optionText => {
-                    const btn = document.createElement('button');
-                    btn.className = 'option-button w-full p-4 bg-gray-50 rounded-xl font-medium text-gray-800 border border-gray-200';
-                    btn.innerHTML = `<span class="flex-1">${optionText}</span><span class="feedback-placeholder"></span>`;
-                    btn.onclick = () => handleSelection(index, optionText, btn);
-                    optionsContainer.appendChild(btn);
-                });
-            });
-            startStopwatch();
-        }
-
-        function handleSelection(qIndex, selectedText, selectedBtn) {
-            if (answeredQuestions.has(qIndex)) return;
-            answeredQuestions.add(qIndex);
-
-            const correct = quizData[qIndex].answer;
-            const isCorrect = selectedText === correct;
+        if (searchTerm.length > 0 && block.dataset.searchText.includes(searchTerm)) {
+            // Move to top
+            block.style.order = "-1";
             
-            if (isCorrect) {
-                score++;
-                document.getElementById('score-display').textContent = score;
-            }
-
-            const container = document.getElementById(`options-container-${qIndex}`);
-            const buttons = container.querySelectorAll('.option-button');
-
-            buttons.forEach(btn => {
-                btn.classList.add('answered');
-                btn.disabled = true;
-                const optText = btn.innerText.trim();
-                const iconPlaceholder = btn.querySelector('.feedback-placeholder');
-
-                if (optText === correct) {
-                    btn.classList.add('bg-green-100', 'border-green-400');
-                    iconPlaceholder.innerHTML = correctIconSVG;
-                    iconPlaceholder.querySelector('.feedback-icon').classList.add('feedback-icon-visible');
-                } else if (btn === selectedBtn && !isCorrect) {
-                    btn.classList.add('bg-red-100', 'border-red-400');
-                    iconPlaceholder.innerHTML = incorrectIconSVG;
-                    iconPlaceholder.querySelector('.feedback-icon').classList.add('feedback-icon-visible');
-                }
+            // Highlight Logic
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            
+            qTextElem.innerHTML = qTextElem.innerHTML.replace(regex, '<mark>$1</mark>');
+            optElems.forEach(li => {
+                li.innerHTML = li.innerHTML.replace(regex, '<mark>$1</mark>');
             });
-
-            if (qIndex === totalQuestions - 1) {
-                document.getElementById('done-button-container').style.display = 'block';
-            }
-
-            if (answeredQuestions.size === totalQuestions) {
-                const doneBtn = document.getElementById('done-btn');
-                if (doneBtn) doneBtn.disabled = false;
-            }
+        } else {
+            // Reset position
+            block.style.order = "0";
         }
+    });
+}
 
-        function showFinalScore() {
-            clearInterval(timerId);
-            const finalTime = updateTimerDisplay();
-            document.getElementById('final-score-text').textContent = `${score} / ${totalQuestions}`;
-            document.getElementById('final-time-text').textContent = finalTime;
-            document.getElementById('final-score-modal').classList.remove('hidden');
-        }
+renderQuiz();
+</script>
 
-        function startOver() {
-            window.location.href = "#";
-            window.location.reload();
-        }
-
-        window.onload = renderQuiz;
-    </script> 
- </body>
+</body>
 </html>
